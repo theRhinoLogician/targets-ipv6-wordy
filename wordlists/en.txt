@@ -9,6 +9,7 @@ a55
 bad
 bed
 bee
+b16
 b0a
 b0b
 b0d
@@ -124,6 +125,7 @@ d1ff
 d15c
 d155
 d0d0
+d00d
 d0e5
 d05e
 do55
@@ -138,6 +140,7 @@ f1fa
 f0e5
 f00d
 fo55
+600d
 1b15
 1ced
 1ce5
