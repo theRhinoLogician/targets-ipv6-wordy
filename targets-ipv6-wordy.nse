@@ -131,7 +131,7 @@ end
 
 function hostrule()
   -- Keep track of the amount of responsive hosts.
-  responsive_counter = responsive_counter +1
+  responsive_counter = responsive_counter + 1
   return true
 end
 
