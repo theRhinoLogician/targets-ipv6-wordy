@@ -9,14 +9,15 @@ the 16-bit segments to "wordify". These addresses are then piped to Nmap if the
 
 ---
 --@usage
--- nmap -6 <base IPv6 address> --script targets-ipv6-wordy.nse --script-args 'newtargets,wordlist=<filename>,segments="<n>"'
--- @args wordlist    The filename of a hexadecimal-based wordlist (required).
--- @args segments    The position of the 16-bit segment(s) of an IPv6 address to swap for a word (required).
---                   These numbers should be separated by commas.
---                   Example:
---                   Given the address 0000:0000:0000:0000:0000:0000:0000:0001,
---                   the segments are    1    2    3    4    5    6    7    8.
---                   If the selected segments are 7 and 8, then segments="7,8".
+-- nmap -6 <base IPv6 address> --script targets-ipv6-wordy.nse --script-args 'newtargets,wordlist=<filename>,segments="<n>",base-address="<IPv6 address>"'
+-- @args wordlist        The filename of a hexadecimal-based wordlist (required).
+-- @args segments        The position of the 16-bit segment(s) of an IPv6 address to swap for a word (required).
+--                       These numbers should be separated by commas.
+--                       Example:
+--                       Given the address 0000:0000:0000:0000:0000:0000:0000:0001,
+--                       the segments are    1    2    3    4    5    6    7    8.
+--                       If the selected segments are 7 and 8, then segments="7,8".
+-- @args base-address    The full 32-nibble IPv6 address to start from.
 --
 -- NOTE: For this script to work, the target's IPv6 address must be given with all its 32 nibbles and their respective colons.
 
@@ -76,10 +77,10 @@ end
 --- Generate all the possible addresses with the words in 'wordlist_filename'
 -- that will populate the 4-nibble segments specified in 'segments'. After an
 -- address has been generated, add it to Nmap's scanning queue.
--- @param segments                 Chosen IPv6 4-nibble segments to "wordify".
 -- @param wordlist_filename        File name of the wordlist.
+-- @param segments                 Chosen IPv6 4-nibble segments to "wordify".
 -- @param target_ip_address_str    IPv6 address that will act as a base for generating new ones.
-local function process_candidate_addresses(segments, wordlist_filename, target_ip_address_str)
+local function process_candidate_addresses(wordlist_filename, segments, target_ip_address_str)
   -- Get an array with the IPv6 nibbles.
   local target_ip_address_arr = split_ipv6_address(target_ip_address_str)
 
@@ -127,11 +128,11 @@ end
 prerule = function()
   local wordlist_filename = stdnse.get_script_args("wordlist")
   local segments = stdnse.get_script_args("segments")
-  local target_ip_address_str = stdnse.get_script_args("base-address")
-  if segments == nil or wordlist_filename == nil or target_ip_address_str == nil or target.ALLOW_NEW_TARGETS == false then 
+  local base_address = stdnse.get_script_args("base-address")
+  if wordlist_filename == nil or segments == nil or base_address == nil or target.ALLOW_NEW_TARGETS == false then 
     return false
   end
-  process_candidate_addresses(segments, wordlist_filename, target_ip_address_str)
+  process_candidate_addresses(wordlist_filename, segments, base_address)
 end
 
 action = function()
