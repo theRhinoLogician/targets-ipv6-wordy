@@ -17,7 +17,7 @@ scanning.
 --                       Given the address 0000:0000:0000:0000:0000:0000:0000:0001,
 --                       the segments are    1    2    3    4    5    6    7    8.
 --                       If the selected segments are 7 and 8, then segments="7,8".
--- @args base-address    The full 32-nibble IPv6 address to start from.
+-- @args base-address    The full 32-nibble IPv6 address to start from (required).
 --
 -- NOTE: For this script to work, the target's IPv6 address must be given with all its 32 nibbles and their respective colons.
 --
@@ -25,7 +25,12 @@ scanning.
 --@output
 --|_targets-ipv6-wordy: Found 42 responsive wordy hosts
 --
-
+--
+-- Acknowledgements: 
+--   Script done as part of the research conducted in Tec de Monterrey, Campus 
+--   Monterrey, Mexico. This script's idea was influenced by Raul Fuentes Samaniego's
+--   work (https://code.google.com/p/itsis-mx/).
+--
 
 author = "Everardo Padilla Saca"
 
