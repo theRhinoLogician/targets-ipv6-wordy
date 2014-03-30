@@ -75,7 +75,8 @@ local function split_ipv6_address(target_ip_address_str)
 end
 
 --- Generate all the possible addresses with the words in 'wordlist_filename'
--- that will populate the 4-nibble segments specified in 'segments'.
+-- that will populate the 4-nibble segments specified in 'segments'. After an
+-- address has been generated, add it to Nmap's scanning queue.
 -- @param segments                 Chosen IPv6 4-nibble segments to "wordify".
 -- @param wordlist_filename        File name of the wordlist.
 -- @param target_ip_address_str    IPv6 address that will act as a base for generating new ones.
@@ -114,15 +115,15 @@ local function process_candidate_addresses(segments, wordlist_filename, target_i
       candidate_ip_address_arr[segment_numbers_arr[j + 1]] = words_table[(word_current_count[j] % #words_table + 1)]
     end
     -- Add the generated address to the Nmap queue.
-    --print(table.concat(candidate_ip_address_arr, ":"))
     target.add(table.concat(candidate_ip_address_arr, ":"))
   end
   
 end
 
-function hostrule(host)
-  print("RULE----->" .. host.ip)
-  return 1 == 1
+function hostrule()
+  -- Keep track of the amount of responsive hosts.
+  responsive_counter = responsive_counter +1
+  return true
 end
 
 prerule = function()
@@ -135,6 +136,6 @@ prerule = function()
   process_candidate_addresses(segments, wordlist_filename, target_ip_address_str)
 end
 
-action = function(host)
+action = function()
   return "Found " .. responsive_counter .. " responsive wordy hosts"
 end
