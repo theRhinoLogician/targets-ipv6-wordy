@@ -27,7 +27,7 @@ scanning.
 --
 --
 -- Acknowledgements: 
---   Script done as part of the research conducted in Tec de Monterrey, Campus 
+--   Script created as part of the research conducted in Tec de Monterrey, Campus 
 --   Monterrey, Mexico. This script's idea was influenced by Raul Fuentes Samaniego's
 --   work (https://code.google.com/p/itsis-mx/).
 --
