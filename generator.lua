@@ -5,11 +5,13 @@ local target_ip_address_arr = {}
 local target_ip_address_str = "2001:0db8:0000:0000:0000:0000:0000:0001"
 local words_file = 'nselib/data/hex-wordy-en.lst'
 
+--- 
 -- Append an extra colon to the IPv6 address for the sake of the following
 -- address-splitting algorithm.
 target_ip_address_str = target_ip_address_str .. ":"
 
---- Every fifth character in our modified IPv6 address should be a colon.
+--- 
+-- Every fifth character in our modified IPv6 address should be a colon.
 -- For any well-formed IPv6 address, index goes from 1 to 8.
 -- Gets each 4 nibble segments and stores them in an array for easy access.
 local nibbles = ""
@@ -23,12 +25,13 @@ for i = 1, string.len(target_ip_address_str) do
   end
 end
 
---- Wordy segments are the 4 nibble groups that the user chose to make wordy.
+--- 
+-- Wordy segments are the 4 nibble groups that the user chose to make wordy.
 -- The segment numbers are stored in an array for easy access.
 local segment_counter = 1
 local segment_numbers_arr = {}
 for segment_number in string.gmatch(wordy_segments, "%d+") do
-  segment_numbers_arr[segment_counter] = segment_number + 0  -- Casting to int.
+  segment_numbers_arr[segment_counter] = tonumber(segment_number)
   segment_counter = segment_counter + 1
 end
 
