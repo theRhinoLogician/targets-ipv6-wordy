@@ -3,13 +3,13 @@ local target = require "target"
 
 description = [[
 Generates all the possible IPv6 addresses given a wordlist and the position of
-the 16-bit segments to "wordify". These addresses are then piped to Nmap if the
-'newtargets' argument is used.
+the 16-bit segments to "wordify". These addresses are then given to Nmap for
+scanning.
 ]]
 
 ---
 --@usage
--- nmap -6 <base IPv6 address> --script targets-ipv6-wordy.nse --script-args 'newtargets,wordlist=<filename>,segments="<n>",base-address="<IPv6 address>"'
+-- nmap -6 <base IPv6 address> --script targets-ipv6-wordy.nse --script-args 'newtargets,targets-ipv6-wordy.wordlist=<filename>,targets-ipv6-wordy.segments="<n>",targets-ipv6-wordy.base-address="<IPv6 address>"'
 -- @args wordlist        The filename of a hexadecimal-based wordlist (required).
 -- @args segments        The position of the 16-bit segment(s) of an IPv6 address to swap for a word (required).
 --                       These numbers should be separated by commas.
@@ -20,6 +20,11 @@ the 16-bit segments to "wordify". These addresses are then piped to Nmap if the
 -- @args base-address    The full 32-nibble IPv6 address to start from.
 --
 -- NOTE: For this script to work, the target's IPv6 address must be given with all its 32 nibbles and their respective colons.
+--
+--
+--@output
+--|_targets-ipv6-wordy: Found 42 responsive wordy hosts
+--
 
 
 author = "Everardo Padilla Saca"
@@ -126,9 +131,9 @@ function hostrule()
 end
 
 prerule = function()
-  local wordlist_filename = stdnse.get_script_args("wordlist")
-  local segments = stdnse.get_script_args("segments")
-  local base_address = stdnse.get_script_args("base-address")
+  local wordlist_filename = stdnse.get_script_args(SCRIPT_NAME .. ".wordlist")
+  local segments = stdnse.get_script_args(SCRIPT_NAME .. ".segments")
+  local base_address = stdnse.get_script_args(SCRIPT_NAME .. ".base-address")
   if wordlist_filename == nil or segments == nil or base_address == nil or target.ALLOW_NEW_TARGETS == false then 
     return false
   end
