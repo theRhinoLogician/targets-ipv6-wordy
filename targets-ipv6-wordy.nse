@@ -1,6 +1,5 @@
 local stdnse = require "stdnse"
 local target = require "target"
-local tab = require "tab"
 
 description = [[
 Generates all the possible IPv6 addresses given a wordlist and the position of
@@ -117,7 +116,6 @@ local function process_candidate_addresses(segments, wordlist_filename, target_i
     -- Add the generated address to the Nmap queue.
     target.add(table.concat(candidate_ip_address_arr, ":"))
   end
-  
 end
 
 function hostrule()
