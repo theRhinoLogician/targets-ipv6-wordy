@@ -3,13 +3,13 @@ local target = require "target"
 
 description = [[
 Generates all the possible IPv6 addresses given a wordlist and the position of
-the 16-bit segments to "wordify". These addresses are then given to Nmap for
-scanning.
+the 16-bit segments of a full 32-nibble IPv6 address to "wordify". As soon as
+address is generated it is then given to Nmap for scanning.
 ]]
 
 ---
 --@usage
--- nmap -6 <base IPv6 address> --script targets-ipv6-wordy.nse --script-args 'newtargets,targets-ipv6-wordy.wordlist=<filename>,targets-ipv6-wordy.segments="<n>",targets-ipv6-wordy.base-address="<IPv6 address>"'
+-- nmap -6 --script targets-ipv6-wordy.nse --script-args 'newtargets,targets-ipv6-wordy.wordlist=<filename>,targets-ipv6-wordy.segments="<n>",targets-ipv6-wordy.base-address="<full 32-nibble IPv6 address>"'
 -- @args wordlist        The filename of a hexadecimal-based wordlist (required).
 -- @args segments        The position of the 16-bit segment(s) of an IPv6 address to swap for a word (required).
 --                       These numbers should be separated by commas.
@@ -111,7 +111,7 @@ local function process_candidate_addresses(wordlist_filename, segments, target_i
   for i = 0, #words_table do
     word_change_triggers[i] = math.pow(#words_table, i)
   end
-
+  local k = 0
   -- Generate all candidate addresses.
   for i = 0, total_candidate_addresses - 1 do
     local candidate_ip_address_arr = get_shallow_copy(target_ip_address_arr)
