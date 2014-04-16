@@ -111,7 +111,6 @@ local function process_candidate_addresses(wordlist_filename, segments, target_i
   for i = 0, #words_table do
     word_change_triggers[i] = math.pow(#words_table, i)
   end
-  local k = 0
   -- Generate all candidate addresses.
   for i = 0, total_candidate_addresses - 1 do
     local candidate_ip_address_arr = get_shallow_copy(target_ip_address_arr)
