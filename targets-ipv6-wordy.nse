@@ -4,12 +4,12 @@ local target = require "target"
 description = [[
 Generates all the possible IPv6 addresses given a wordlist and the position of
 the 16-bit segments of a full 32-nibble IPv6 address to "wordify". As soon as
-address is generated it is then given to Nmap for scanning.
+address is generated it is added to the target queue.
 ]]
 
 ---
 --@usage
--- nmap -6 --script targets-ipv6-wordy.nse --script-args 'newtargets,targets-ipv6-wordy.wordlist=<filename>,targets-ipv6-wordy.segments="<n>",targets-ipv6-wordy.base-address="<full 32-nibble IPv6 address>"'
+-- nmap -6 --script targets-ipv6-wordy.nse --script-args 'newtargets,targets-ipv6-wordy.wordlist=<filename>,targets-ipv6-wordy.segments="<n1,n2...>",targets-ipv6-wordy.base-address="<full 32-nibble IPv6 address>"'
 -- @args wordlist        The filename of a hexadecimal-based wordlist (required).
 -- @args segments        The position of the 16-bit segment(s) of an IPv6 address to swap for a word (required).
 --                       These numbers should be separated by commas.
@@ -20,11 +20,6 @@ address is generated it is then given to Nmap for scanning.
 -- @args base-address    The full 32-nibble IPv6 address to start from (required).
 --
 -- NOTE: For this script to work, the target's IPv6 address must be given with all its 32 nibbles and their respective colons.
---
---
---@output
---|_targets-ipv6-wordy: Found 42 responsive wordy hosts
---
 --
 -- Acknowledgements: 
 --   Script created as part of the research conducted in Tec de Monterrey, Campus 
@@ -38,12 +33,10 @@ license = "Same as Nmap--See http://nmap.org/book/man-legal.html"
 
 categories = {"discovery", "safe"}
 
-local responsive_counter = 0
-
 --- Load the wordlist into a table.
 -- @param wordlist_filename    Filename of the wordlist.
 -- @return words_talbe         Table containing the words.
-local function load_words(wordlist_filename)
+local function load_words_from_file(wordlist_filename)
   words_table = {}
   for word in io.lines(wordlist_filename) do
     words_table[#words_table + 1] = word
@@ -84,9 +77,8 @@ local function split_ipv6_address(target_ip_address_str)
   return target_ip_address_arr
 end
 
---- Generate all the possible addresses with the words in 'wordlist_filename'
--- that will populate the 4-nibble segments specified in 'segments'. After an
--- address has been generated, add it to Nmap's scanning queue.
+--- Generates all the possible addresses with the words in 'wordlist_filename'
+-- After an address has been generated, add it to Nmap's scanning queue.
 -- @param wordlist_filename        File name of the wordlist.
 -- @param segments                 Chosen IPv6 4-nibble segments to "wordify".
 -- @param target_ip_address_str    IPv6 address that will act as a base for generating new ones.
@@ -102,7 +94,7 @@ local function process_candidate_addresses(wordlist_filename, segments, target_i
     segment_counter = segment_counter + 1
   end
 
-  local words_table = load_words(wordlist_filename)
+  local words_table = load_words_from_file(wordlist_filename)
   local word_change_triggers = {}
   local word_current_count = {}
   local total_candidate_addresses = math.pow(#words_table, #segment_numbers_arr);
@@ -125,16 +117,11 @@ local function process_candidate_addresses(wordlist_filename, segments, target_i
     end
     -- Add the generated address to the Nmap queue.
     target.add(table.concat(candidate_ip_address_arr, ":"))
+    print(table.concat(candidate_ip_address_arr, ":"))
   end
 end
 
-function hostrule()
-  -- Keep track of the amount of responsive hosts.
-  responsive_counter = responsive_counter + 1
-  return true
-end
-
-prerule = function()
+function prerule()
   local wordlist_filename = stdnse.get_script_args(SCRIPT_NAME .. ".wordlist")
   local segments = stdnse.get_script_args(SCRIPT_NAME .. ".segments")
   local base_address = stdnse.get_script_args(SCRIPT_NAME .. ".base-address")
@@ -144,6 +131,9 @@ prerule = function()
   process_candidate_addresses(wordlist_filename, segments, base_address)
 end
 
-action = function()
-  return "Found " .. responsive_counter .. " responsive wordy hosts"
+function hostrule(host)
+  return true
+end
+
+function action()
 end
