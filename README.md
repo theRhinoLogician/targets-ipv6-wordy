@@ -13,8 +13,7 @@ Base IP address: ```fe80:0000:0000:0000:0000:0000:0000:0000``` (note how all of 
 Chosen segments (m): ```7,8```
 
 
-The amount of generated addresses is: ```n^m = 4^2 = 16```
-Generated addresses:
+The amount of generated addresses is ```n^m = 4^2 = 16```:
 ```
 fe80:0000:0000:0000:0000:0000:beef:beef
 fe80:0000:0000:0000:0000:0000:cafe:beef
