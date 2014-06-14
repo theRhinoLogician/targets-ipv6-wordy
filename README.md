@@ -1,14 +1,17 @@
 targets-ipv6-wordy
 ====================
 
-NSE script that generates addresses to be scanned, based on a list of hex-based words (eg. c0de, beef, cafe, aced).
+NSE script that generates addresses to be scanned, based on a list of hex-based words (eg. c0de, beef, cafe, aced). The address-generation algorithm works like this:
 
-
-The address-generation algorithm works like this:
 
 Words domain (n): ```{c0de, beef, cafe, aced}```
-Base IP address: ```fe80:0000:0000:0000:0000:0000:0000:0000```
+
+
+Base IP address: ```fe80:0000:0000:0000:0000:0000:0000:0000``` (note how all of the 32 characters have to be specified, meaning that ```::``` cannot be used because of the parsing process).
+
+
 Chosen segments (m): ```7,8```
+
 
 The amount of generated addresses is: ```n^m = 4^2 = 16```
 Generated addresses:
